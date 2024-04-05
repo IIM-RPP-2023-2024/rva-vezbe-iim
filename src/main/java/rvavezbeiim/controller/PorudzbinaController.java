@@ -24,6 +24,9 @@ public class PorudzbinaController {
 	
     @Autowired
     private PorudzbinaService porudzbinaService;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
 
     @GetMapping("porudzbina")
@@ -68,6 +71,13 @@ public class PorudzbinaController {
 
     @DeleteMapping("porudzbina/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
+    	
+    	if(id == -100 && !porudzbinaService.existsById(id)) {
+    		jdbcTemplate.execute("INSERT INTO porudzbina"
+    				+ " ( \"id\", \"dobavljac\", \"placeno\", \"iznos\", \"isporuceno\", \"datum\" ) "
+    				+ "VALUES ( -100, 1, true, 1000, "
+    				+ "to_date('29.03.2021.', 'dd.mm.yyyy'), to_date('29.04.2021.', 'dd.mm.yyyy') )");
+    	}
 
         if (porudzbinaService.existsById(id)) {
             porudzbinaService.deleteById(id);

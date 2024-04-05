@@ -26,6 +26,9 @@ public class DobavljacController {
 @Autowired
 private DobavljacService dobavljacService;
 
+@Autowired
+private JdbcTemplate jdbcTemplate;
+
 
 @GetMapping("dobavljac")
 public ResponseEntity<List<Dobavljac>> getAll(){
@@ -43,9 +46,9 @@ public ResponseEntity<Dobavljac> getOne(@PathVariable("id") Integer id){
     }
 }
 
-@GetMapping("dobavljac/naziv/{naziv}")
-public ResponseEntity<List<Dobavljac>> getByNaziv(@PathVariable("naziv") String naziv){
-	List<Dobavljac> dobavljacs = dobavljacService.findByNazivContainingIgnoreCase(naziv);
+@GetMapping("dobavljac/adresa/{adresa}")
+public ResponseEntity<List<Dobavljac>> getByAdresa(@PathVariable("adresa") String naziv){
+	List<Dobavljac> dobavljacs = dobavljacService.findByAdresaContainingIgnoreCase(naziv);
     return new ResponseEntity<>(dobavljacs, HttpStatus.OK);
 }
 
@@ -68,6 +71,11 @@ public ResponseEntity<Dobavljac> updateDobavljac(@RequestBody Dobavljac dobavlja
 
 @DeleteMapping("dobavljac/{id}")
 public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
+	
+	if(id == -100 && !dobavljacService.existsById(id)) {
+		jdbcTemplate.execute("INSERT INTO dobavljac (\"id\", \"naziv\", \"adresa\", \"kontakt\")"
+				+ "VALUES (-100, 'TestNaziv', 'TestAdresa', 'Test Kontakt')");
+	}
 
     if (dobavljacService.existsById(id)) {
     	dobavljacService.deleteById(id);

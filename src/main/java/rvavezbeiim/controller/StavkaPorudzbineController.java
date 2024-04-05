@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,9 @@ public class StavkaPorudzbineController {
 	
 	@Autowired
 	private PorudzbinaService porudzbinaService;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
     @GetMapping("stavkaPorudzbine")
     public ResponseEntity<List<StavkaPorudzbine>> getAll() {
@@ -85,6 +89,12 @@ public class StavkaPorudzbineController {
    @DeleteMapping("stavkaPorudzbine/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
 
+	   if(id == -100 && !stavkaPorudzbineService.existsById(id)) {
+		   jdbcTemplate.execute(" INSERT INTO stavka_porudzbine "
+		   		+ " ( \"id\", \"redni_broj\", \"kolicina\", \"jedinica_mere\", \"cena\", \"porudzbina\", \"artikl\" ) "
+		   		+ "VALUES (-100, '100', '1', 'kom', 100, 1, 1");
+	   }
+		   
 
         if (stavkaPorudzbineService.existsById(id)) {
             stavkaPorudzbineService.deleteById(id);

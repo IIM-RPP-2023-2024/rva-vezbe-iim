@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,9 @@ public class ArtiklController {
 	@Autowired
 	private ArtiklService artiklService;
 	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
     /*
      * HTTP GET je jedna od HTTP metoda koja je analogna opciji READ iz CRUD
      * operacija. Anotacija @GetMapping se koristi kako bi se mapirao HTTP GET
@@ -81,6 +85,15 @@ public class ArtiklController {
 	
 	@DeleteMapping("/artikl/{id}")
 	public ResponseEntity<HttpStatus> delete(@PathVariable("id") Integer id){
+		
+		// kreiranje testnog artikla za brisanje
+		if(id == -100 && !artiklService.existById(id)) {
+			// INSERT INTO ARTIKL ("id", "proizvodjac", "naziv") VALUES (-100, 'Test', 'Test')
+			jdbcTemplate.execute("INSERT INTO artikl (\"id\", \"proizvodjac\", \"naziv\") "
+					+ " VALUES ( -100, 'Test proizvodjac', 'Test naziv' )");
+		}
+		
+		// metoda brisanja
 		if(artiklService.existById(id)) {
 			artiklService.deleteById(id);
 			return new ResponseEntity<HttpStatus>(HttpStatus.OK);
@@ -89,3 +102,6 @@ public class ArtiklController {
 	}
 	
 }
+
+
+

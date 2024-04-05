@@ -23,7 +23,7 @@ public class DobavljacService {
 		return dobavljacRepository.findById(id);
 	}
 	
-	public List<Dobavljac> findByNazivContainingIgnoreCase(String naziv) {
+	public List<Dobavljac> findByAdresaContainingIgnoreCase(String naziv) {
         return dobavljacRepository.findByAdresaContainingIgnoreCase(naziv);
     }
 	
