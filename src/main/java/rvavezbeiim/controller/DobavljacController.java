@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rvavezbeiim.model.Dobavljac;
 import rvavezbeiim.service.DobavljacService;
 
+@CrossOrigin
 @RestController
 public class DobavljacController {
 

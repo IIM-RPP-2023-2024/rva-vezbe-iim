@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rvavezbeiim.model.Porudzbina;
 import rvavezbeiim.service.PorudzbinaService;
 
+@CrossOrigin
 @RestController
 public class PorudzbinaController {
 	
